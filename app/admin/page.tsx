@@ -15,7 +15,7 @@ export default async function AdminPage() {
   if (!me?.is_staff) redirect('/');
 
   const [pending, rewards] = await Promise.all([
-    supabase.from('stamp_requests').select('id, created_at, profiles(name, email)')
+    supabase.from('stamp_requests').select('id, created_at, quantity, profiles(name, email)')
       .eq('status', 'pending').order('created_at'),
     supabase.from('rewards').select('id, issued_at, profiles(name, email)')
       .is('redeemed_at', null).order('issued_at'),
@@ -25,7 +25,7 @@ export default async function AdminPage() {
     <main className="page page--admin">
       <LiveRefresh tables={['stamp_requests', 'rewards']} />
       <AdminConsole
-        pending={(pending.data ?? []).map((r) => ({ id: r.id, createdAt: r.created_at, ...who(r.profiles as Joined) }))}
+        pending={(pending.data ?? []).map((r) => ({ id: r.id, createdAt: r.created_at, quantity: r.quantity, ...who(r.profiles as Joined) }))}
         rewards={(rewards.data ?? []).map((r) => ({ id: r.id, issuedAt: r.issued_at, ...who(r.profiles as Joined) }))}
       />
     </main>
