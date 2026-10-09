@@ -15,6 +15,7 @@ export default function AdminConsole({ pending, rewards }: Props) {
   const initialIds = useRef(new Set(pending.map((p) => p.id)));
   const [seen, setSeen] = useState<Set<string>>(new Set());
   const [armed, setArmed] = useState<string | null>(null);
+  const [qtyById, setQtyById] = useState<Record<string, number>>({});
   const [error, setError] = useState(false);
   const [now, setNow] = useState(() => Date.now());
   const [, startTransition] = useTransition();
@@ -44,9 +45,13 @@ export default function AdminConsole({ pending, rewards }: Props) {
     });
   }
 
-  const approve = (id: string) => {
+  const qtyOf = (p: Pending) => qtyById[p.id] ?? p.quantity ?? 1;
+  const adjust = (p: Pending, delta: number) =>
+    setQtyById((m) => ({ ...m, [p.id]: Math.min(Math.max(qtyOf(p) + delta, 1), 5) }));
+
+  const approve = (p: Pending) => {
     setArmed(null);
-    run(() => approveRequest(id), id);
+    run(() => approveRequest(p.id, qtyOf(p)), p.id);
   };
   const reject = (id: string) => {
     setArmed(null);
@@ -80,12 +85,23 @@ export default function AdminConsole({ pending, rewards }: Props) {
                       <div>
                         <div className="queue-row__name">{p.name || p.email}</div>
                         <div className="queue-row__time">
-                          {(p.quantity ?? 1) > 1 && <strong>{p.quantity} coffees · </strong>}
                           {timeAgo(p.createdAt, now)}
                           {sharedNames(sorted, p.name) && ` · ${p.email}`}
                         </div>
                       </div>
                       {isNew && <span className="tag-new">New</span>}
+                    </div>
+                    <div className="stepper stepper--compact" role="group" aria-label={`Coffees for ${p.name}`}>
+                      <span className="stepper__label">
+                        Coffees{qtyOf(p) !== (p.quantity ?? 1) && ` (they asked for ${p.quantity ?? 1})`}
+                      </span>
+                      <div className="stepper__controls">
+                        <button type="button" className="stepper__btn" aria-label={`One fewer coffee for ${p.name}`}
+                          disabled={qtyOf(p) <= 1} onClick={() => adjust(p, -1)}>−</button>
+                        <output className="stepper__value">{qtyOf(p)}</output>
+                        <button type="button" className="stepper__btn" aria-label={`One more coffee for ${p.name}`}
+                          disabled={qtyOf(p) >= 5} onClick={() => adjust(p, 1)}>+</button>
+                      </div>
                     </div>
                     <div className="row-actions">
                       {isArmed ? (
@@ -97,7 +113,7 @@ export default function AdminConsole({ pending, rewards }: Props) {
                           Reject
                         </button>
                       )}
-                      <button type="button" className="btn btn--approve" aria-label={`Approve ${p.name}${(p.quantity ?? 1) > 1 ? `, ${p.quantity} coffees` : ''}`} onClick={() => approve(p.id)}>
+                      <button type="button" className="btn btn--approve" aria-label={`Approve ${p.name}, ${qtyOf(p)} ${qtyOf(p) === 1 ? 'coffee' : 'coffees'}`} onClick={() => approve(p)}>
                         <Check style={{ strokeWidth: 3.5 }} />Approve
                       </button>
                     </div>

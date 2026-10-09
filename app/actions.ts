@@ -35,11 +35,15 @@ export async function requestStamp(quantity = 1): Promise<ActionResult> {
   return {};
 }
 
-async function decide(id: string, status: 'approved' | 'rejected'): Promise<ActionResult> {
+async function decide(id: string, status: 'approved' | 'rejected', quantity?: number): Promise<ActionResult> {
   const supabase = await createClient();
   const { error } = await supabase
     .from('stamp_requests')
-    .update({ status, decided_at: new Date().toISOString() })
+    .update({
+      status,
+      decided_at: new Date().toISOString(),
+      ...(quantity !== undefined && { quantity: Math.min(Math.max(Math.floor(quantity) || 1, 1), 5) }),
+    })
     .eq('id', id)
     .eq('status', 'pending');
   if (error) return { error: GENERIC_ERROR };
@@ -47,8 +51,8 @@ async function decide(id: string, status: 'approved' | 'rejected'): Promise<Acti
   return {};
 }
 
-export async function approveRequest(id: string): Promise<ActionResult> {
-  return decide(id, 'approved');
+export async function approveRequest(id: string, quantity?: number): Promise<ActionResult> {
+  return decide(id, 'approved', quantity);
 }
 
 export async function rejectRequest(id: string): Promise<ActionResult> {

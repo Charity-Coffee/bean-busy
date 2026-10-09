@@ -200,3 +200,5 @@ img { display: block; max-width: 100%; height: auto; }
   color: var(--ink); font: 700 24px/1 var(--font); cursor: pointer; display: grid; place-items: center; }
 .stepper__btn[disabled] { border-color: var(--line); color: var(--ring); cursor: default; }
 .stepper__value { min-width: 36px; text-align: center; font-size: 22px; font-weight: 800; }
+.stepper--compact { border-color: var(--line); background: var(--ground); padding: 4px 4px 4px 14px; }
+.stepper--compact .stepper__btn { width: 44px; height: 44px; font-size: 22px; }
