@@ -17,9 +17,9 @@ export default async function HomePage() {
 
   const [profile, requests, approved, rewards] = await Promise.all([
     supabase.from('profiles').select('name, is_staff').eq('id', user.id).maybeSingle(),
-    supabase.from('stamp_requests').select('id, status, created_at').eq('user_id', user.id)
+    supabase.from('stamp_requests').select('id, status, created_at, quantity').eq('user_id', user.id)
       .order('created_at', { ascending: false }).limit(10),
-    supabase.from('stamp_requests').select('id', { count: 'exact', head: true })
+    supabase.from('stamp_requests').select('quantity')
       .eq('user_id', user.id).eq('status', 'approved'),
     supabase.from('rewards').select('id', { count: 'exact', head: true })
       .eq('user_id', user.id).is('redeemed_at', null),
@@ -27,11 +27,12 @@ export default async function HomePage() {
 
   const name = profile.data?.name || 'there';
   const isStaff = Boolean(profile.data?.is_staff);
-  const stamps = (approved.count ?? 0) % THRESHOLD;
+  const stamps = (approved.data ?? []).reduce((sum, r) => sum + r.quantity, 0) % THRESHOLD;
   const rewardsAvailable = rewards.count ?? 0;
   const items = (requests.data ?? []).map((r) => ({
     id: r.id,
     createdAt: r.created_at,
+    quantity: r.quantity,
     status: r.status as 'pending' | 'approved' | 'rejected',
   }));
   const hasPending = items.some((i) => i.status === 'pending');

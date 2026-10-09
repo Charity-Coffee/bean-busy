@@ -9,7 +9,8 @@ type ActionResult = { error?: string };
 const COOLDOWN_MINUTES = 5;
 const GENERIC_ERROR = "That didn't go through. Check your connection and try again.";
 
-export async function requestStamp(): Promise<ActionResult> {
+export async function requestStamp(quantity = 1): Promise<ActionResult> {
+  const qty = Math.min(Math.max(Math.floor(quantity) || 1, 1), 5);
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/login');
@@ -25,7 +26,7 @@ export async function requestStamp(): Promise<ActionResult> {
     return { error: 'Please wait a few minutes before requesting another stamp.' };
   }
 
-  const { error } = await supabase.from('stamp_requests').insert({ user_id: user.id });
+  const { error } = await supabase.from('stamp_requests').insert({ user_id: user.id, quantity: qty });
   if (error) {
     // 23505 = unique violation: a request is already waiting.
     return { error: error.code === '23505' ? 'Your last request is still waiting for staff.' : GENERIC_ERROR };

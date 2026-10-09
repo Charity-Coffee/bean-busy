@@ -190,3 +190,13 @@ img { display: block; max-width: 100%; height: auto; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* ---------- Coffee quantity stepper ---------- */
+.stepper { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3);
+  background: var(--surface); border: 2px solid var(--line); border-radius: var(--r-field); padding: 8px 8px 8px 16px; }
+.stepper__label { font-size: 16px; font-weight: 600; }
+.stepper__controls { display: flex; align-items: center; gap: 4px; }
+.stepper__btn { width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--ink); background: var(--surface);
+  color: var(--ink); font: 700 24px/1 var(--font); cursor: pointer; display: grid; place-items: center; }
+.stepper__btn[disabled] { border-color: var(--line); color: var(--ring); cursor: default; }
+.stepper__value { min-width: 36px; text-align: center; font-size: 22px; font-weight: 800; }

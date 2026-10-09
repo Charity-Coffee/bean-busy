@@ -5,7 +5,7 @@ import { approveRequest, markRedeemed, rejectRequest } from '@/app/actions';
 import { timeAgo } from '@/lib/format';
 import { Alert, Check, ChevronLeft } from './Icons';
 
-type Pending = { id: string; createdAt: string; name: string; email: string };
+type Pending = { id: string; createdAt: string; quantity?: number; name: string; email: string };
 type Reward = { id: string; issuedAt: string; name: string; email: string };
 type Props = { pending: Pending[]; rewards: Reward[] };
 
@@ -80,6 +80,7 @@ export default function AdminConsole({ pending, rewards }: Props) {
                       <div>
                         <div className="queue-row__name">{p.name || p.email}</div>
                         <div className="queue-row__time">
+                          {(p.quantity ?? 1) > 1 && <strong>{p.quantity} coffees · </strong>}
                           {timeAgo(p.createdAt, now)}
                           {sharedNames(sorted, p.name) && ` · ${p.email}`}
                         </div>
@@ -96,7 +97,7 @@ export default function AdminConsole({ pending, rewards }: Props) {
                           Reject
                         </button>
                       )}
-                      <button type="button" className="btn btn--approve" aria-label={`Approve ${p.name}`} onClick={() => approve(p.id)}>
+                      <button type="button" className="btn btn--approve" aria-label={`Approve ${p.name}${(p.quantity ?? 1) > 1 ? `, ${p.quantity} coffees` : ''}`} onClick={() => approve(p.id)}>
                         <Check style={{ strokeWidth: 3.5 }} />Approve
                       </button>
                     </div>

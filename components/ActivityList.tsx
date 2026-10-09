@@ -1,7 +1,7 @@
 import { formatWhen } from '@/lib/format';
 import { Check, Clock, Cross } from './Icons';
 
-export type ActivityItem = { id: string; createdAt: string; status: 'pending' | 'approved' | 'rejected' };
+export type ActivityItem = { id: string; createdAt: string; quantity?: number; status: 'pending' | 'approved' | 'rejected' };
 
 const BADGES = {
   pending: { Icon: Clock, label: 'Pending' },
@@ -17,11 +17,11 @@ export default function ActivityList({ items }: { items: ActivityItem[] }) {
         <p className="empty">No purchases yet. Buy a coffee, then tap the button above.</p>
       ) : (
         <ul className="activity">
-          {items.map(({ id, createdAt, status }) => {
+          {items.map(({ id, createdAt, quantity = 1, status }) => {
             const { Icon, label } = BADGES[status];
             return (
               <li key={id} className="activity-row">
-                <span>{formatWhen(createdAt)}</span>
+                <span>{formatWhen(createdAt)}{quantity > 1 && ` · ${quantity} coffees`}</span>
                 <span className={`badge badge--${status}`}><Icon />{label}</span>
               </li>
             );
