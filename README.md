@@ -8,3 +8,7 @@ Installable web app (PWA). Customers collect stamps toward a free coffee; staff 
 3. Copy `.env.example` to `.env.local` and fill in the project URL and anon key.
 4. `npm install && npm run dev`
 5. Make the first staff member: `update public.profiles set is_staff = true where email = 'you@example.com';`
+
+## Deploy (Cloudflare Workers)
+Build command: `npx opennextjs-cloudflare build`; deploy command: `npx wrangler deploy`.
+Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` as **build** variables.
