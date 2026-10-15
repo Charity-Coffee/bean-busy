@@ -37,17 +37,20 @@ export async function requestStamp(quantity = 1): Promise<ActionResult> {
 
 async function decide(id: string, status: 'approved' | 'rejected', quantity?: number): Promise<ActionResult> {
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
   const { error } = await supabase
     .from('stamp_requests')
     .update({
       status,
       decided_at: new Date().toISOString(),
+      decided_by: user?.id ?? null,
       ...(quantity !== undefined && { quantity: Math.min(Math.max(Math.floor(quantity) || 1, 1), 5) }),
     })
     .eq('id', id)
     .eq('status', 'pending');
   if (error) return { error: GENERIC_ERROR };
   revalidatePath('/admin');
+  revalidatePath('/admin/history');
   return {};
 }
 
@@ -61,9 +64,10 @@ export async function rejectRequest(id: string): Promise<ActionResult> {
 
 export async function markRedeemed(id: string): Promise<ActionResult> {
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
   const { error } = await supabase
     .from('rewards')
-    .update({ redeemed_at: new Date().toISOString() })
+    .update({ redeemed_at: new Date().toISOString(), redeemed_by: user?.id ?? null })
     .eq('id', id)
     .is('redeemed_at', null);
   if (error) return { error: GENERIC_ERROR };
