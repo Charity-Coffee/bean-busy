@@ -24,3 +24,16 @@ export function timeAgo(iso: string, now = Date.now()): string {
   if (hours < 48) return 'yesterday';
   return `${Math.floor(hours / 24)} days ago`;
 }
+
+/** Brisbane calendar day, e.g. "2026-10-15". Handy for grouping. */
+export function dayOf(iso: string): string {
+  return dayKey.format(new Date(iso));
+}
+
+/** "Today", "Yesterday", "Tue 6 Oct" */
+export function formatDay(iso: string, now = new Date()): string {
+  const day = dayKey.format(new Date(iso));
+  if (day === dayKey.format(now)) return 'Today';
+  if (day === dayKey.format(new Date(now.getTime() - 86_400_000))) return 'Yesterday';
+  return dateFmt.format(new Date(iso)).replace(',', '');
+}
