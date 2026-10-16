@@ -1,3 +1,4 @@
 import { defineCloudflareConfig } from '@opennextjs/cloudflare';
 
-export default defineCloudflareConfig();
+// `npm run build` runs the OpenNext bundler, which calls plain `next build` itself.
+export default { ...defineCloudflareConfig(), buildCommand: 'next build' };
