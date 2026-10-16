@@ -62,7 +62,7 @@ export default function AdminConsole({ pending, rewards }: Props) {
     <>
       <header className="row row--between">
         <h1 style={{ fontSize: 32 }}>Staff console</h1>
-        <nav className="row" style={{ gap: 20 }}>
+        <nav className="row admin-nav">
           <a className="link" href="/admin/history">History</a>
           <a className="link" href="/"><ChevronLeft style={{ width: 18, height: 18 }} />My card</a>
         </nav>
