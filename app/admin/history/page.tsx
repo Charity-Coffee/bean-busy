@@ -159,7 +159,7 @@ export default async function HistoryPage({
                     <div className="queue-row__time">
                       {e.kind === 'redeemed' ? 'Redeemed' : e.kind === 'approved' ? `Approved ${e.quantity} ${e.quantity === 1 ? 'coffee' : 'coffees'}` : 'Rejected'}
                       {' · '}{formatWhen(e.at)}
-                      {' · by '}{e.by ?? '—'}
+                      {' · by '}{e.by || 'staff'}
                     </div>
                     <div className="queue-row__time">
                       {e.kind === 'redeemed' ? 'Earned' : 'Requested'} {formatWhen(e.since)}
