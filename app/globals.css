@@ -221,6 +221,8 @@ img { display: block; max-width: 100%; height: auto; }
 .stepper--compact .stepper__btn { width: 44px; height: 44px; font-size: 22px; }
 
 /* ---------- Staff history ---------- */
+.admin-nav { flex: none; gap: 16px; }
+.admin-nav .link { white-space: nowrap; }
 .history-search { display: flex; flex-direction: column; gap: var(--s-3); }
 .chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
 .chip { min-height: 44px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 999px;
