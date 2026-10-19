@@ -15,9 +15,9 @@ export default async function AdminPage() {
   if (!me?.is_staff) redirect('/');
 
   const [pending, rewards] = await Promise.all([
-    supabase.from('stamp_requests').select('id, created_at, quantity, profiles(name, email)')
+    supabase.from('stamp_requests').select('id, created_at, quantity, profiles!stamp_requests_user_id_fkey(name, email)')
       .eq('status', 'pending').order('created_at'),
-    supabase.from('rewards').select('id, issued_at, profiles(name, email)')
+    supabase.from('rewards').select('id, issued_at, profiles!rewards_user_id_fkey(name, email)')
       .is('redeemed_at', null).order('issued_at'),
   ]);
 
