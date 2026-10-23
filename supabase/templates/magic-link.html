@@ -1,0 +1,52 @@
+<!-- Supabase Auth → Email Templates → Magic Link
+     Subject: Your Charity Coffee sign-in link -->
+<!DOCTYPE html>
+<html lang="en">
+  <body style="margin:0;padding:0;background-color:#EFEEE9;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#EFEEE9;">
+      <tr>
+        <td align="center" style="padding:32px 16px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:480px;">
+            <tr>
+              <td style="padding:0 0 24px 0;font-family:Helvetica,Arial,sans-serif;font-size:14px;letter-spacing:4px;font-weight:700;color:#301D1D;">
+                CHARITY COFFEE
+              </td>
+            </tr>
+            <tr>
+              <td style="background-color:#FFFFFF;border:2px solid #301D1D;border-radius:16px;padding:32px 24px;font-family:Helvetica,Arial,sans-serif;color:#301D1D;">
+                <h1 style="margin:0 0 12px 0;font-size:26px;line-height:1.2;font-weight:700;color:#301D1D;">
+                  Your sign-in link
+                </h1>
+                <p style="margin:0 0 24px 0;font-size:16px;line-height:1.5;color:#5E4C4C;">
+                  Tap the button to sign in and see your stamps. Ten stamps and your next coffee is on us.
+                </p>
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td align="center" bgcolor="#301D1D" style="border-radius:12px;">
+                      <a href="{{ .ConfirmationURL }}"
+                         style="display:inline-block;padding:16px 28px;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:700;color:#FFFFFF;text-decoration:none;border-radius:12px;">
+                        Sign in to Charity Coffee
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+                <p style="margin:24px 0 0 0;font-size:14px;line-height:1.5;color:#5E4C4C;">
+                  Open this on the same device you asked for the link from. It works once and expires soon.
+                </p>
+                <p style="margin:16px 0 0 0;font-size:13px;line-height:1.5;color:#857A78;word-break:break-all;">
+                  Button not working? Paste this into your browser:<br>
+                  {{ .ConfirmationURL }}
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:20px 8px 0 8px;font-family:Helvetica,Arial,sans-serif;font-size:13px;line-height:1.5;color:#5E4C4C;">
+                Didn't ask for this? You can ignore this email and nobody will be signed in.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
