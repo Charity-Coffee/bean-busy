@@ -4,11 +4,22 @@ import { useState, type FormEvent } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Alert, Mail, Spinner } from '@/components/Icons';
 
-export default function LoginForm({ initialError }: { initialError?: 'link' }) {
-  const [status, setStatus] = useState<'idle' | 'sending' | 'error' | 'link-error' | 'sent'>(
-    initialError === 'link' ? 'link-error' : 'idle',
-  );
+const EXPIRED_LINK = "That sign-in link didn't work. It may have expired, so request a new one below.";
+
+function messageFor(error: { status?: number; code?: string }) {
+  if (error.status === 429 || error.code === 'over_email_send_rate_limit') {
+    return 'Too many attempts. Please wait a minute and try again.';
+  }
+  if (error.code === 'email_address_invalid' || error.code === 'validation_failed') {
+    return "That email address doesn't look right. Check it and try again.";
+  }
+  return "We couldn't send your sign-in link right now. Please try again in a few minutes.";
+}
+
+export default function LoginForm({ initialError = false }: { initialError?: boolean }) {
+  const [status, setStatus] = useState<'idle' | 'sending' | 'error' | 'sent'>(initialError ? 'error' : 'idle');
   const [email, setEmail] = useState('');
+  const [message, setMessage] = useState(initialError ? EXPIRED_LINK : '');
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -17,10 +28,15 @@ export default function LoginForm({ initialError }: { initialError?: 'link' }) {
     const address = String(form.get('email') ?? '').trim();
     setEmail(address);
     setStatus('sending');
+    setMessage('');
     const { error } = await createClient().auth.signInWithOtp({
       email: address,
       options: { data: { name }, emailRedirectTo: `${window.location.origin}/auth/callback` },
     });
+    if (error) {
+      console.error('Sign-in link failed', error);
+      setMessage(messageFor(error));
+    }
     setStatus(error ? 'error' : 'sent');
   }
 
@@ -43,15 +59,7 @@ export default function LoginForm({ initialError }: { initialError?: 'link' }) {
     <form className="form" onSubmit={onSubmit}>
       {status === 'error' && (
         <div role="alert" className="alert">
-          <Alert /><span>We couldn&apos;t send that link. Check your email address and try again.</span>
-        </div>
-      )}
-      {status === 'link-error' && (
-        <div role="alert" className="alert">
-          <Alert /><span>
-            That link didn&apos;t work &mdash; it may have expired, already been used, or been opened in a
-            different browser than the one you requested it from. Enter your email below for a new one.
-          </span>
+          <Alert /><span>{message}</span>
         </div>
       )}
       <div className="field">
