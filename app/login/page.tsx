@@ -12,7 +12,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
           Ten stamps and your next coffee is on us. Sign in with your email and we&apos;ll send you a link.
         </p>
       </div>
-      <LoginForm initialError={Boolean(error)} />
+      <LoginForm initialError={error === 'link' ? 'link' : undefined} />
     </main>
   );
 }

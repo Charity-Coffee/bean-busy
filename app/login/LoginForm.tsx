@@ -4,8 +4,10 @@ import { useState, type FormEvent } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Alert, Mail, Spinner } from '@/components/Icons';
 
-export default function LoginForm({ initialError = false }: { initialError?: boolean }) {
-  const [status, setStatus] = useState<'idle' | 'sending' | 'error' | 'sent'>(initialError ? 'error' : 'idle');
+export default function LoginForm({ initialError }: { initialError?: 'link' }) {
+  const [status, setStatus] = useState<'idle' | 'sending' | 'error' | 'link-error' | 'sent'>(
+    initialError === 'link' ? 'link-error' : 'idle',
+  );
   const [email, setEmail] = useState('');
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -42,6 +44,14 @@ export default function LoginForm({ initialError = false }: { initialError?: boo
       {status === 'error' && (
         <div role="alert" className="alert">
           <Alert /><span>We couldn&apos;t send that link. Check your email address and try again.</span>
+        </div>
+      )}
+      {status === 'link-error' && (
+        <div role="alert" className="alert">
+          <Alert /><span>
+            That link didn&apos;t work &mdash; it may have expired, already been used, or been opened in a
+            different browser than the one you requested it from. Enter your email below for a new one.
+          </span>
         </div>
       )}
       <div className="field">
