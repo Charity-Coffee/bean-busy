@@ -7,7 +7,7 @@ import { Alert, Mail, Spinner } from '@/components/Icons';
 const CALLBACK_ERROR_MESSAGES: Record<string, string> = {
   link_mismatch:
     "That sign-in link didn't work — probably because it was opened in a different app or browser than the one you " +
-    'requested it from (e.g. an email app’s built-in browser). Enter the 6-digit code from the email instead, or ' +
+    'requested it from (e.g. an email app’s built-in browser). Enter the code from the email instead, or ' +
     'request a new link and open it in the same browser.',
   missing_code: "That link looks incomplete. Request a new one below.",
 };
@@ -73,7 +73,7 @@ export default function LoginForm({ initialError }: { initialError?: string }) {
         <Mail style={{ width: 40, height: 40 }} />
         <h2>Check your email</h2>
         <p className="muted">
-          We sent a sign-in link and a 6-digit code to <strong>{email}</strong>. Click the link, or enter the code
+          We sent a sign-in link and a code to <strong>{email}</strong>. Click the link, or enter the code
           below — the code works even if the link doesn&apos;t open on this device.
         </p>
         {status === 'codeError' && (
@@ -83,7 +83,7 @@ export default function LoginForm({ initialError }: { initialError?: string }) {
         )}
         <form className="form" onSubmit={onVerifyCode}>
           <div className="field">
-            <label htmlFor="code">6-digit code</label>
+            <label htmlFor="code">Code</label>
             <input
               id="code"
               name="code"
@@ -91,8 +91,8 @@ export default function LoginForm({ initialError }: { initialError?: string }) {
               inputMode="numeric"
               pattern="[0-9]*"
               autoComplete="one-time-code"
-              placeholder="123456"
-              maxLength={6}
+              placeholder="12345678"
+              maxLength={8}
               required
             />
           </div>
