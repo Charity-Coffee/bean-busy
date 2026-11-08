@@ -4,22 +4,36 @@ import { useState, type FormEvent } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Alert, Mail, Spinner } from '@/components/Icons';
 
-const ERROR_MESSAGES: Record<string, string> = {
+const CALLBACK_ERROR_MESSAGES: Record<string, string> = {
   link_mismatch:
     "That sign-in link didn't work — probably because it was opened in a different app or browser than the one you " +
     'requested it from (e.g. an email app’s built-in browser). Enter the 6-digit code from the email instead, or ' +
     'request a new link and open it in the same browser.',
   missing_code: "That link looks incomplete. Request a new one below.",
 };
-const SEND_ERROR = "We couldn't send that link. Check your email address and try again.";
+const EXPIRED_LINK = "That sign-in link didn't work. It may have expired, so request a new one below.";
 const CODE_ERROR = "That code didn't work. Check it and try again, or request a new one.";
+
+function messageForCallbackError(reason: string) {
+  return CALLBACK_ERROR_MESSAGES[reason] ?? EXPIRED_LINK;
+}
+
+function messageForSendError(error: { status?: number; code?: string }) {
+  if (error.status === 429 || error.code === 'over_email_send_rate_limit') {
+    return 'Too many attempts. Please wait a minute and try again.';
+  }
+  if (error.code === 'email_address_invalid' || error.code === 'validation_failed') {
+    return "That email address doesn't look right. Check it and try again.";
+  }
+  return "We couldn't send your sign-in link right now. Please try again in a few minutes.";
+}
 
 export default function LoginForm({ initialError }: { initialError?: string }) {
   const [status, setStatus] = useState<'idle' | 'sending' | 'error' | 'sent' | 'verifying' | 'codeError'>(
     initialError ? 'error' : 'idle',
   );
   const [email, setEmail] = useState('');
-  const [callbackError] = useState(initialError);
+  const [message, setMessage] = useState(initialError ? messageForCallbackError(initialError) : '');
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -28,10 +42,15 @@ export default function LoginForm({ initialError }: { initialError?: string }) {
     const address = String(form.get('email') ?? '').trim();
     setEmail(address);
     setStatus('sending');
+    setMessage('');
     const { error } = await createClient().auth.signInWithOtp({
       email: address,
       options: { data: { name }, emailRedirectTo: `${window.location.origin}/auth/callback` },
     });
+    if (error) {
+      console.error('Sign-in link failed', error);
+      setMessage(messageForSendError(error));
+    }
     setStatus(error ? 'error' : 'sent');
   }
 
@@ -93,7 +112,7 @@ export default function LoginForm({ initialError }: { initialError?: string }) {
     <form className="form" onSubmit={onSubmit}>
       {status === 'error' && (
         <div role="alert" className="alert">
-          <Alert /><span>{(callbackError && ERROR_MESSAGES[callbackError]) || SEND_ERROR}</span>
+          <Alert /><span>{message}</span>
         </div>
       )}
       <div className="field">
