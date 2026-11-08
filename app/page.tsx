@@ -9,7 +9,7 @@ import RewardBanner from '@/components/RewardBanner';
 import SignOutButton from '@/components/SignOutButton';
 import StampCard from '@/components/StampCard';
 
-const THRESHOLD = 10;
+const THRESHOLD = 9;
 
 export default async function HomePage() {
   const supabase = await createClient();

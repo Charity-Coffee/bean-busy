@@ -10,7 +10,7 @@ const COOLDOWN_MINUTES = 5;
 const GENERIC_ERROR = "That didn't go through. Check your connection and try again.";
 
 export async function requestStamp(quantity = 1): Promise<ActionResult> {
-  const qty = Math.min(Math.max(Math.floor(quantity) || 1, 1), 5);
+  const qty = Math.min(Math.max(Math.floor(quantity) || 1, 1), 9);
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/login');
@@ -44,7 +44,7 @@ async function decide(id: string, status: 'approved' | 'rejected', quantity?: nu
       status,
       decided_at: new Date().toISOString(),
       decided_by: user?.id ?? null,
-      ...(quantity !== undefined && { quantity: Math.min(Math.max(Math.floor(quantity) || 1, 1), 5) }),
+      ...(quantity !== undefined && { quantity: Math.min(Math.max(Math.floor(quantity) || 1, 1), 9) }),
     })
     .eq('id', id)
     .eq('status', 'pending');
