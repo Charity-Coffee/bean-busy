@@ -47,7 +47,7 @@ export default function AdminConsole({ pending, rewards }: Props) {
 
   const qtyOf = (p: Pending) => qtyById[p.id] ?? p.quantity ?? 1;
   const adjust = (p: Pending, delta: number) =>
-    setQtyById((m) => ({ ...m, [p.id]: Math.min(Math.max(qtyOf(p) + delta, 1), 5) }));
+    setQtyById((m) => ({ ...m, [p.id]: Math.min(Math.max(qtyOf(p) + delta, 1), 9) }));
 
   const approve = (p: Pending) => {
     setArmed(null);
@@ -103,7 +103,7 @@ export default function AdminConsole({ pending, rewards }: Props) {
                           disabled={qtyOf(p) <= 1} onClick={() => adjust(p, -1)}>−</button>
                         <output className="stepper__value">{qtyOf(p)}</output>
                         <button type="button" className="stepper__btn" aria-label={`One more coffee for ${p.name}`}
-                          disabled={qtyOf(p) >= 5} onClick={() => adjust(p, 1)}>+</button>
+                          disabled={qtyOf(p) >= 9} onClick={() => adjust(p, 1)}>+</button>
                       </div>
                     </div>
                     <div className="row-actions">

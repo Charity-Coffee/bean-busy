@@ -5,7 +5,7 @@ import { requestStamp } from '@/app/actions';
 import { Alert, Spinner } from './Icons';
 
 const DEFAULT_ERROR = 'Please wait a few minutes before requesting another stamp.';
-const MAX_QTY = 5;
+const MAX_QTY = 9;
 
 export default function RequestStampButton({ hasPending }: { hasPending: boolean }) {
   const [pending, startTransition] = useTransition();
