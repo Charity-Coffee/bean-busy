@@ -150,7 +150,7 @@ img { display: block; max-width: 100%; height: auto; }
   background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--r-field); padding: 8px 14px;
   font-size: 16px; font-weight: 500; }
 .badge { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 0 10px;
-  border-radius: 999px; font-size: 14px; font-weight: 700; }
+  border-radius: 999px; font-size: 14px; font-weight: 700; flex: none; white-space: nowrap; }
 .badge .icon { width: 14px; height: 14px; stroke-width: 3; }
 .badge--pending { background: var(--sand); color: var(--ink); border: 1.5px dashed var(--ink); }
 .badge--approved { background: var(--ink); color: var(--ground); }

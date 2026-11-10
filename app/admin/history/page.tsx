@@ -22,7 +22,7 @@ const TYPES = [
 type TypeValue = (typeof TYPES)[number]['value'];
 
 const PAGE = 50;
-const LABEL: Record<Kind, string> = { approved: 'Approved', rejected: 'Rejected', redeemed: 'Free coffee redeemed' };
+const LABEL: Record<Kind, string> = { approved: 'Approved', rejected: 'Rejected', redeemed: 'Redeemed' };
 
 export default async function HistoryPage({
   searchParams,
