@@ -31,12 +31,11 @@ export default function StampCard({ stamps, threshold }: Props) {
       <ol className="stamps">
         {slots.map((n) => {
           const filled = n <= stamps;
-          const isPrize = n === threshold && !filled;
           const isNew = filled && n === stamps && justLanded;
           return (
             <li
               key={n}
-              className={['stamp', filled && 'is-filled', isNew && 'is-new', isPrize && 'is-prize']
+              className={['stamp', filled && 'is-filled', isNew && 'is-new']
                 .filter(Boolean)
                 .join(' ')}
             >
@@ -45,14 +44,15 @@ export default function StampCard({ stamps, threshold }: Props) {
                   <Cup />
                   <span className="sr-only">Stamp {n}, collected</span>
                 </>
-              ) : isPrize ? (
-                <span>Free<b>{n}</b></span>
               ) : (
                 n
               )}
             </li>
           );
         })}
+        <li className="stamp is-prize">
+          <span>Free<b>{threshold + 1}</b></span>
+        </li>
       </ol>
       <p className="muted" style={{ fontSize: 16 }}>
         {left === 1 ? '1 more stamp and your next coffee is free.' : `${left} more stamps and your next coffee is free.`}
